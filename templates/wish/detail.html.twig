@@ -7,5 +7,13 @@
 {% block body %}
     Détail d'un souhait
 
+    <ul>
+        <li>{{ wish.title }}</li>
+        <li>{{ wish.description }}</li>
+        <li>{{ wish.author }}</li>
+        <li>{{ wish.dateCreated | date('d/m/Y H:i') }}</li>
+    </ul>
+
+
 {% endblock %}
 
