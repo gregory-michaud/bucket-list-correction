@@ -12,8 +12,14 @@
         <li>{{ wish.description }}</li>
         <li>{{ wish.author }}</li>
         <li>{{ wish.dateCreated | date('d/m/Y H:i') }}</li>
+        <li>{{ wish.category ? wish.category.name : '' }}</li>
     </ul>
+    <form action="{{ path('wish_delete', {'id' : wish.id }) }}">
 
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ wish.id) }}">
+
+        <button>Delete</button>
+    </form>
 
 {% endblock %}
 

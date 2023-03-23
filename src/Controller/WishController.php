@@ -17,7 +17,7 @@ class WishController extends AbstractController
     #[Route('list', name: 'list')]
     public function list(WishRepository $wishRepository): Response
     {
-        $wishes = $wishRepository->findBy(['isPublished'=>true], ['dateCreated'=>'DESC']);
+        $wishes = $wishRepository->findWishesWithCategory();
 
 
         return $this->render('wish/list.html.twig', [
@@ -65,6 +65,24 @@ class WishController extends AbstractController
         return $this->render('wish/create.html.twig', [
             'wishForm' => $wishForm
         ]);
+    }
+
+    #[Route('delete/{id}', name: 'delete')]
+    public function delete(int $id,
+                           WishRepository $wishRepository,
+                           EntityManagerInterface $entityManager,
+                            Request $request): Response
+    {
+        if($this->isCsrfTokenValid('delete'.$id, $request->get('_token'))){
+            //rechercher le souhait à supprimer
+            $wishDelete = $wishRepository->find($id);
+
+            $entityManager->remove($wishDelete);
+            $entityManager->flush();
+        }
+
+
+        return $this->redirectToRoute('wish_list');
     }
 
 
