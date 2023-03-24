@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/wish/', name: 'wish_')]
 class WishController extends AbstractController
@@ -37,6 +38,7 @@ class WishController extends AbstractController
     }
 
     #[Route('create', name: 'create')]
+    #[IsGranted("ROLE_USER")]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $wish = new Wish();
@@ -51,6 +53,8 @@ class WishController extends AbstractController
             // renseigne les infos qui ne sont pas dans le formulaire
             $wish->setDateCreated(new \DateTime());
             $wish->setIsPublished(true);
+            // valorise l'auteur du souhait avec le user connecté
+            $wish->setAuthor($this->getUser()->getUserIdentifier());
 
             // enregistre le souhait en BDD
             $entityManager->persist($wish);
